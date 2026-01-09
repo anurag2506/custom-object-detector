@@ -1,5 +1,6 @@
 import torch
 import math
+from torchvision.ops import nms as tv_nms
 
 
 def box_iou(boxes1, boxes2):
@@ -18,24 +19,10 @@ def box_iou(boxes1, boxes2):
 
 
 def nms(boxes, scores, thresh):
-    """Non-maximum suppression"""
+    """Non-maximum suppression using torchvision's optimized implementation"""
     if len(boxes) == 0:
         return torch.empty(0, dtype=torch.long, device=boxes.device)
-
-    _, order = scores.sort(descending=True)
-    keep = []
-
-    while len(order) > 0:
-        i = order[0].item()
-        keep.append(i)
-        if len(order) == 1:
-            break
-
-        iou = box_iou(boxes[i:i+1], boxes[order[1:]])[0]
-        mask = iou <= thresh
-        order = order[1:][mask]
-
-    return torch.tensor(keep, dtype=torch.long, device=boxes.device)
+    return tv_nms(boxes, scores, thresh)
 
 
 def decode_boxes(deltas, anchors):

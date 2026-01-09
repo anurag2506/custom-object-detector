@@ -30,7 +30,7 @@ NMS_THRESH = 0.5
 MAX_DETECTIONS = 100
 
 # Other
-NUM_WORKERS = 0
-DEVICE = "cpu"
+NUM_WORKERS = 6
+DEVICE = "cuda"
 OUTPUT_DIR = "./output"
 SEED = 42
