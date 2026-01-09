@@ -67,9 +67,8 @@ def decode_boxes(deltas, anchors):
 def clip_boxes(boxes, img_size):
     """Clip boxes to image boundaries"""
     h, w = img_size
-    boxes = boxes.clone()
-    boxes[:, 0] = boxes[:, 0].clamp(0, w)
-    boxes[:, 1] = boxes[:, 1].clamp(0, h)
-    boxes[:, 2] = boxes[:, 2].clamp(0, w)
-    boxes[:, 3] = boxes[:, 3].clamp(0, h)
-    return boxes
+    x1 = boxes[:, 0].clamp(0, w)
+    y1 = boxes[:, 1].clamp(0, h)
+    x2 = boxes[:, 2].clamp(0, w)
+    y2 = boxes[:, 3].clamp(0, h)
+    return torch.stack([x1, y1, x2, y2], dim=1)

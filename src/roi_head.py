@@ -194,7 +194,9 @@ class RoIHead(nn.Module):
         if len(boxes) == 0:
             return torch.empty(0, dtype=torch.long, device=boxes.device)
         offset = labels.float() * (boxes.max() + 1)
-        boxes_offset = boxes.clone()
-        boxes_offset[:, 0] += offset
-        boxes_offset[:, 2] += offset
+        x1 = boxes[:, 0] + offset
+        y1 = boxes[:, 1]
+        x2 = boxes[:, 2] + offset
+        y2 = boxes[:, 3]
+        boxes_offset = torch.stack([x1, y1, x2, y2], dim=1)
         return nms(boxes_offset, scores, thresh)

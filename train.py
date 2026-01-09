@@ -12,7 +12,7 @@ from dataset import StreetDataset, collate_fn
 def train():
     # setup
     torch.manual_seed(config.SEED)
-    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    device = config.DEVICE
     print(f"Using: {device}")
 
     os.makedirs(config.OUTPUT_DIR, exist_ok=True)

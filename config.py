@@ -2,7 +2,7 @@
 
 # Dataset settings
 DATA_ROOT = "./data/street_objects"
-CLASSES = ["background", "Person", "Car", "Truck", "Bicycle", "Traffic light"]
+CLASSES = ["background", "Person", "Car", "Bicycle", "Speed Limit 30", "Stop Sign"]
 NUM_CLASSES = 6
 
 # Training settings
@@ -30,7 +30,7 @@ NMS_THRESH = 0.5
 MAX_DETECTIONS = 100
 
 # Other
-NUM_WORKERS = 4
-DEVICE = "cuda"
+NUM_WORKERS = 0
+DEVICE = "cpu"
 OUTPUT_DIR = "./output"
 SEED = 42
