@@ -10,11 +10,12 @@ import random
 class StreetDataset(Dataset):
     """Dataset for street object detection"""
 
-    def __init__(self, root, split, classes, augment=False):
+    def __init__(self, root, split, classes, augment=False, img_size=640):
         self.root = root
         self.split = split
         self.classes = classes
         self.augment = augment
+        self.img_size = img_size
         self.class_to_idx = {c: i for i, c in enumerate(classes)}
 
         self.img_dir = os.path.join(root, 'images', split)
@@ -51,7 +52,8 @@ class StreetDataset(Dataset):
         img_path = os.path.join(self.img_dir, f"{img_id}.jpg")
 
         img = Image.open(img_path).convert('RGB')
-        w, h = img.size
+        img = img.resize((self.img_size, self.img_size), Image.BILINEAR)
+        w, h = self.img_size, self.img_size
 
         boxes = []
         labels = []

@@ -10,16 +10,16 @@ import random
 from PIL import Image
 
 # source and destination
-ARCHIVE_DIR = "../archive"
+ARCHIVE_DIR = "../archive (1)/dataset"
 OUTPUT_DIR = "./data/street_objects"
 
 # classes we want (must match folder names in archive)
 CLASS_MAP = {
     'person': 'Person',
     'car': 'Car',
-    'truck': 'Truck',
     'bicycle': 'Bicycle',
-    'trafficlight': 'Traffic light'
+    'limit30': 'Speed Limit 30',
+    'stop': 'Stop Sign'
 }
 
 IMAGES_PER_CLASS = 400
