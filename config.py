@@ -6,7 +6,7 @@ CLASSES = ["background", "Person", "Car", "Bicycle", "Speed Limit 30", "Stop Sig
 NUM_CLASSES = 6
 
 # Training settings
-BATCH_SIZE = 2
+BATCH_SIZE = 8
 NUM_EPOCHS = 24
 LEARNING_RATE = 0.005
 MOMENTUM = 0.9
@@ -15,7 +15,7 @@ LR_STEPS = [16, 22]  # epochs to reduce lr
 LR_GAMMA = 0.1
 
 # Model settings
-BACKBONE = "resnet50"
+BACKBONE = "resnet18"
 ANCHOR_SIZES = [32, 64, 128, 256, 512]
 ANCHOR_RATIOS = [0.5, 1.0, 2.0]
 

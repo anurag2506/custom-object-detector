@@ -10,7 +10,7 @@ import random
 class StreetDataset(Dataset):
     """Dataset for street object detection"""
 
-    def __init__(self, root, split, classes, augment=False, img_size=640):
+    def __init__(self, root, split, classes, augment=False, img_size=416):
         self.root = root
         self.split = split
         self.classes = classes
