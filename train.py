@@ -2,6 +2,7 @@ import os
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
+from torch.cuda.amp import GradScaler, autocast
 from tqdm import tqdm
 
 import config
@@ -12,6 +13,7 @@ from dataset import StreetDataset, collate_fn
 def train():
     # setup
     torch.manual_seed(config.SEED)
+    torch.backends.cudnn.benchmark = True
     device = config.DEVICE
     print(f"Using: {device}")
 
@@ -29,6 +31,7 @@ def train():
         shuffle=True,
         num_workers=config.NUM_WORKERS,
         collate_fn=collate_fn,
+        pin_memory=True,
     )
     val_loader = DataLoader(
         val_data,
@@ -36,6 +39,7 @@ def train():
         shuffle=False,
         num_workers=config.NUM_WORKERS,
         collate_fn=collate_fn,
+        pin_memory=True,
     )
 
     # model
@@ -55,6 +59,7 @@ def train():
     scheduler = optim.lr_scheduler.MultiStepLR(
         optimizer, config.LR_STEPS, config.LR_GAMMA
     )
+    scaler = GradScaler()
 
     best_loss = float("inf")
 
@@ -65,10 +70,10 @@ def train():
 
         pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{config.NUM_EPOCHS}")
         for imgs, targets in pbar:
-            imgs = [img.to(device) for img in imgs]
+            imgs = [img.to(device, non_blocking=True) for img in imgs]
             targets = [
                 {
-                    k: v.to(device) if isinstance(v, torch.Tensor) else v
+                    k: v.to(device, non_blocking=True) if isinstance(v, torch.Tensor) else v
                     for k, v in t.items()
                 }
                 for t in targets
@@ -78,13 +83,16 @@ def train():
             if epoch == 0:
                 warmup_lr(optimizer, pbar.n, len(train_loader), config.LEARNING_RATE)
 
-            losses = model(imgs, targets)
-            loss = sum(losses.values())
+            optimizer.zero_grad(set_to_none=True)
+            with autocast():
+                losses = model(imgs, targets)
+                loss = sum(losses.values())
 
-            optimizer.zero_grad()
-            loss.backward()
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 10.0)
-            optimizer.step()
+            scaler.step(optimizer)
+            scaler.update()
 
             epoch_loss += loss.item()
             pbar.set_postfix(loss=f"{loss.item():.4f}")
