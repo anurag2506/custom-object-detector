@@ -7,11 +7,11 @@ NUM_CLASSES = 6
 
 # Training settings
 BATCH_SIZE = 8
-NUM_EPOCHS = 24
+NUM_EPOCHS = 40
 LEARNING_RATE = 0.005
 MOMENTUM = 0.9
 WEIGHT_DECAY = 0.0001
-LR_STEPS = [16, 22]  # epochs to reduce lr
+LR_STEPS = [26, 36]  # epochs to reduce lr
 LR_GAMMA = 0.1
 
 # Model settings
@@ -30,7 +30,7 @@ NMS_THRESH = 0.5
 MAX_DETECTIONS = 100
 
 # Other
-NUM_WORKERS = 6
+NUM_WORKERS = 2
 DEVICE = "cuda"
 OUTPUT_DIR = "./output"
 SEED = 42

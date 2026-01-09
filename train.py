@@ -2,7 +2,7 @@ import os
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torch.cuda.amp import GradScaler, autocast
+from torch.amp import GradScaler, autocast
 from tqdm import tqdm
 
 import config
@@ -59,7 +59,7 @@ def train():
     scheduler = optim.lr_scheduler.MultiStepLR(
         optimizer, config.LR_STEPS, config.LR_GAMMA
     )
-    scaler = GradScaler()
+    scaler = GradScaler('cuda')
 
     best_loss = float("inf")
 
@@ -84,7 +84,7 @@ def train():
                 warmup_lr(optimizer, pbar.n, len(train_loader), config.LEARNING_RATE)
 
             optimizer.zero_grad(set_to_none=True)
-            with autocast():
+            with autocast('cuda'):
                 losses = model(imgs, targets)
                 loss = sum(losses.values())
 

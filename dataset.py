@@ -80,16 +80,35 @@ class StreetDataset(Dataset):
         return img, {'boxes': boxes, 'labels': labels, 'image_id': img_id}
 
     def _augment(self, img, boxes):
+        w, h = img.size
+
         # horizontal flip
         if random.random() > 0.5:
             img = TF.hflip(img)
-            w = img.size[0]
             boxes[:, [0, 2]] = w - boxes[:, [2, 0]]
 
+        # random scale
+        if random.random() > 0.5:
+            scale = random.uniform(0.8, 1.2)
+            new_w, new_h = int(w * scale), int(h * scale)
+            img = img.resize((new_w, new_h), Image.BILINEAR)
+            boxes = boxes * scale
+            img = img.resize((w, h), Image.BILINEAR)
+            boxes = boxes / scale
+
         # color jitter
-        img = TF.adjust_brightness(img, random.uniform(0.8, 1.2))
-        img = TF.adjust_contrast(img, random.uniform(0.8, 1.2))
-        img = TF.adjust_saturation(img, random.uniform(0.8, 1.2))
+        img = TF.adjust_brightness(img, random.uniform(0.7, 1.3))
+        img = TF.adjust_contrast(img, random.uniform(0.7, 1.3))
+        img = TF.adjust_saturation(img, random.uniform(0.7, 1.3))
+        img = TF.adjust_hue(img, random.uniform(-0.1, 0.1))
+
+        # random grayscale
+        if random.random() > 0.9:
+            img = TF.to_grayscale(img, num_output_channels=3)
+
+        # gaussian blur
+        if random.random() > 0.8:
+            img = TF.gaussian_blur(img, kernel_size=3)
 
         return img, boxes
 
