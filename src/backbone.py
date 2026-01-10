@@ -1,10 +1,11 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from torchvision.models import resnet18 as tv_resnet18, resnet50 as tv_resnet50
+from torchvision.models import ResNet18_Weights, ResNet50_Weights
 
 
 class BasicBlock(nn.Module):
-    """Basic residual block for ResNet-18/34"""
     expansion = 1
 
     def __init__(self, in_ch, out_ch, stride=1, downsample=None):
@@ -17,19 +18,15 @@ class BasicBlock(nn.Module):
 
     def forward(self, x):
         identity = x
-
         out = F.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-
         if self.downsample:
             identity = self.downsample(x)
-
         out += identity
         return F.relu(out)
 
 
 class Bottleneck(nn.Module):
-    """Bottleneck block for ResNet-50/101/152"""
     expansion = 4
 
     def __init__(self, in_ch, out_ch, stride=1, downsample=None):
@@ -44,45 +41,30 @@ class Bottleneck(nn.Module):
 
     def forward(self, x):
         identity = x
-
         out = F.relu(self.bn1(self.conv1(x)))
         out = F.relu(self.bn2(self.conv2(out)))
         out = self.bn3(self.conv3(out))
-
         if self.downsample:
             identity = self.downsample(x)
-
         out += identity
         return F.relu(out)
 
 
 class ResNetBackbone(nn.Module):
-    """ResNet backbone for feature extraction"""
-
     def __init__(self, block, layers):
         super().__init__()
         self.in_channels = 64
 
-        # stem
         self.conv1 = nn.Conv2d(3, 64, 7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.maxpool = nn.MaxPool2d(3, stride=2, padding=1)
 
-        # residual layers
         self.layer1 = self._make_layer(block, 64, layers[0], stride=1)
         self.layer2 = self._make_layer(block, 128, layers[1], stride=2)
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
 
         self.out_channels = 512 * block.expansion
-
-        # init weights
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
 
     def _make_layer(self, block, out_ch, num_blocks, stride):
         downsample = None
@@ -114,9 +96,29 @@ class ResNetBackbone(nn.Module):
         return x
 
 
-def resnet50():
-    return ResNetBackbone(Bottleneck, [3, 4, 6, 3])
+def resnet50(pretrained=True):
+    backbone = ResNetBackbone(Bottleneck, [3, 4, 6, 3])
+    if pretrained:
+        print("Loading pretrained ResNet50 weights...")
+        pretrained_model = tv_resnet50(weights=ResNet50_Weights.IMAGENET1K_V1)
+        pretrained_dict = pretrained_model.state_dict()
+        backbone_dict = backbone.state_dict()
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in backbone_dict}
+        backbone_dict.update(pretrained_dict)
+        backbone.load_state_dict(backbone_dict)
+        print(f"Loaded {len(pretrained_dict)} pretrained layers")
+    return backbone
 
 
-def resnet18():
-    return ResNetBackbone(BasicBlock, [2, 2, 2, 2])
+def resnet18(pretrained=True):
+    backbone = ResNetBackbone(BasicBlock, [2, 2, 2, 2])
+    if pretrained:
+        print("Loading pretrained ResNet18 weights...")
+        pretrained_model = tv_resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
+        pretrained_dict = pretrained_model.state_dict()
+        backbone_dict = backbone.state_dict()
+        pretrained_dict = {k: v for k, v in pretrained_dict.items() if k in backbone_dict}
+        backbone_dict.update(pretrained_dict)
+        backbone.load_state_dict(backbone_dict)
+        print(f"Loaded {len(pretrained_dict)} pretrained layers")
+    return backbone
