@@ -1,21 +1,21 @@
 # Configuration for Faster RCNN training
 
 # Dataset settings
-DATA_ROOT = "./data/street_objects"
-CLASSES = ["background", "Person", "Car", "Bicycle", "Speed Limit 30", "Stop Sign"]
+DATA_ROOT = "./data/voc"
+CLASSES = ["background", "person", "car", "bus", "bicycle", "motorbike"]
 NUM_CLASSES = 6
 
 # Training settings
-BATCH_SIZE = 8
-NUM_EPOCHS = 40
+BATCH_SIZE = 2
+NUM_EPOCHS = 24
 LEARNING_RATE = 0.005
 MOMENTUM = 0.9
 WEIGHT_DECAY = 0.0001
-LR_STEPS = [26, 36]  # epochs to reduce lr
+LR_STEPS = [16, 22]
 LR_GAMMA = 0.1
 
 # Model settings
-BACKBONE = "resnet18"
+BACKBONE = "resnet50"
 ANCHOR_SIZES = [32, 64, 128, 256, 512]
 ANCHOR_RATIOS = [0.5, 1.0, 2.0]
 
@@ -30,7 +30,15 @@ NMS_THRESH = 0.5
 MAX_DETECTIONS = 100
 
 # Other
-NUM_WORKERS = 2
-DEVICE = "cuda"
+NUM_WORKERS = 4
 OUTPUT_DIR = "./output"
 SEED = 42
+
+# Device priority: cuda > mps > cpu
+import torch
+if torch.cuda.is_available():
+    DEVICE = "cuda"
+elif torch.backends.mps.is_available():
+    DEVICE = "mps"
+else:
+    DEVICE = "cpu"
