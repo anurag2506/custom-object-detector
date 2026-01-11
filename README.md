@@ -58,14 +58,10 @@ pip install -r requirements.txt
 
 ```bash
 # Run on a single image
-python inference.py --weights model/best.pth --source path/to/image.jpg --output output/result --conf 0.3
-
-# Run on multiple test images
-python inference.py --weights model/best.pth --source test1.png --output output/test1_result --conf 0.3
-python inference.py --weights model/best.pth --source test2.png --output output/test2_result --conf 0.3
+python inference.py --weights model/best.pth --source path/to/image.jpg --output tests/result --conf 0.3
 
 # Run on video
-python inference.py --weights model/best.pth --source video.mp4 --output output/video_result --conf 0.3
+python inference.py --weights model/best.pth --source video.mp4 --output tests/video_result --conf 0.3
 
 # Benchmark inference speed
 python inference.py --weights model/best.pth --benchmark
@@ -106,13 +102,13 @@ custom-object-detector/
 │   ├── rpn.py           # Region Proposal Network
 │   ├── roi_head.py      # RoI Head for classification/regression
 │   └── utils.py         # NMS, IoU, box utilities
-├── assets/              # Demo images and GIFs
+├── model/
+│   └── best.pth         # Trained model weights
+├── tests/               # Test detection outputs
 ├── config.py            # Training configuration
 ├── dataset.py           # Data loading and augmentation
 ├── train.py             # Training script with validation
 ├── inference.py         # Inference and visualization
-├── prepare_data.py      # Data preparation script
-├── REPORT.md            # Detailed technical report
 ├── requirements.txt
 └── README.md
 ```
@@ -142,7 +138,7 @@ custom-object-detector/
 ## Test Output
 
 <p align="center">
-  <img src="output/result_4.jpg" alt="Test Detection" width="600"/>
+  <img src="tests/result_4.jpg" alt="Test Detection" width="600"/>
 </p>
 
 ---
