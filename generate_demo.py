@@ -15,7 +15,7 @@ def main():
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using device: {device}")
 
-    weights_path = "./best.pth"
+    weights_path = "./model/best.pth"
     if not os.path.exists(weights_path):
         print(f"Error: {weights_path} not found. Train the model first.")
         return
