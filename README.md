@@ -42,16 +42,6 @@ A **from-scratch** PyTorch implementation of Faster R-CNN for real-time street o
 | **FPS** | 22 |
 | **Parameters** | 136M |
 
-### Per-Class Performance
-
-| Class | AP |
-|-------|-----|
-| Person | 0.52 |
-| Car | 0.61 |
-| Bus | 0.55 |
-| Bicycle | 0.54 |
-| Motorbike | 0.58 |
-
 ---
 
 ## Quick Start
@@ -64,28 +54,28 @@ cd custom-object-detector
 pip install -r requirements.txt
 ```
 
-### Training
-
-```bash
-# Prepare dataset
-python prepare_data.py
-
-# Train model
-python train.py
-```
-
 ### Inference
 
 ```bash
-# Single image
-python inference.py --weights best.pth --source image.jpg --output result
+# Run on a single image
+python inference.py --weights model/best.pth --source path/to/image.jpg --output output/result --conf 0.3
 
-# Video
-python inference.py --weights best.pth --source video.mp4 --output result
+# Run on multiple test images
+python inference.py --weights model/best.pth --source test1.png --output output/test1_result --conf 0.3
+python inference.py --weights model/best.pth --source test2.png --output output/test2_result --conf 0.3
 
-# Benchmark speed
-python inference.py --weights best.pth --benchmark
+# Run on video
+python inference.py --weights model/best.pth --source video.mp4 --output output/video_result --conf 0.3
+
+# Benchmark inference speed
+python inference.py --weights model/best.pth --benchmark
 ```
+
+**Arguments:**
+- `--weights`: Path to trained model weights (default: `model/best.pth`)
+- `--source`: Input image or video path
+- `--output`: Output path for results (without extension)
+- `--conf`: Confidence threshold for detections (default: 0.5)
 
 ---
 
@@ -163,6 +153,16 @@ For detailed architecture design, training methodology, and results analysis, se
   <img src="assets/detection_example_1.jpg" alt="Example 1" width="400"/>
   <img src="assets/detection_example_2.jpg" alt="Example 2" width="400"/>
 </p>
+
+---
+
+## Test Output
+
+<p align="center">
+  <img src="output/result_5.jpg" alt="Test Detection - London Street" width="600"/>
+</p>
+
+*Detection on a London street scene: buses, cars, persons, and bicycles detected.*
 
 ---
 
