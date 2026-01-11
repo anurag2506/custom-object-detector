@@ -147,22 +147,11 @@ For detailed architecture design, training methodology, and results analysis, se
 
 ---
 
-## Sample Detections
-
-<p align="center">
-  <img src="assets/detection_example_1.jpg" alt="Example 1" width="400"/>
-  <img src="assets/detection_example_2.jpg" alt="Example 2" width="400"/>
-</p>
-
----
-
 ## Test Output
 
 <p align="center">
-  <img src="output/result_5.jpg" alt="Test Detection - London Street" width="600"/>
+  <img src="output/result_4.jpg" alt="Test Detection" width="600"/>
 </p>
-
-*Detection on a London street scene: buses, cars, persons, and bicycles detected.*
 
 ---
 
