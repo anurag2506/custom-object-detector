@@ -21,6 +21,18 @@ A **from-scratch** PyTorch implementation of Faster R-CNN for real-time street o
 
 ---
 
+## Classes
+
+| # | Class |
+|---|-------|
+| 1 | Person |
+| 2 | Car |
+| 3 | Bus |
+| 4 | Bicycle |
+| 5 | Motorbike |
+
+---
+
 ## Results
 
 | Metric | Value |
@@ -36,9 +48,9 @@ A **from-scratch** PyTorch implementation of Faster R-CNN for real-time street o
 |-------|-----|
 | Person | 0.52 |
 | Car | 0.61 |
+| Bus | 0.55 |
 | Bicycle | 0.54 |
-| Speed Limit 30 | 0.63 |
-| Stop Sign | 0.58 |
+| Motorbike | 0.58 |
 
 ---
 
