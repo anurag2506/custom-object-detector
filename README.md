@@ -139,14 +139,6 @@ custom-object-detector/
 
 ---
 
-## Documentation
-
-For detailed architecture design, training methodology, and results analysis, see:
-
-**[REPORT.md](REPORT.md)** - Full Technical Report
-
----
-
 ## Test Output
 
 <p align="center">
